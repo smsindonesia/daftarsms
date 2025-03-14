@@ -166,6 +166,14 @@
                 height: 60px;
             }
         }
+
+        .hidden-iframe {
+            display: none;
+            width: 0;
+            height: 0;
+            border: 0;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -261,6 +269,9 @@
     </div>
 </div>
 
+<!-- Hidden iframe for form submission -->
+<iframe name="hidden-iframe" class="hidden-iframe" id="hidden-iframe"></iframe>
+
 <script>
     document.getElementById('registrationForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -306,14 +317,14 @@
 
         console.log("Data yang akan dikirim:", data);
 
-        // Google Apps Script Web App URL - Updated with new deployment URL
+        // Google Apps Script Web App URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyr1N6YaRjHqUK1hQHWjiuLcC2jZ037ix5z2Iu5YUvGNYXu0cPsC-QgsYBVLREg0jJR/exec';
 
         // Create a form to submit
         const tempForm = document.createElement('form');
         tempForm.method = 'POST';
         tempForm.action = scriptURL;
-        tempForm.target = '_blank'; // This opens response in a new tab, can be removed
+        tempForm.target = 'hidden-iframe'; // Target the hidden iframe
 
         // Add data as a hidden field
         const hiddenField = document.createElement('input');
