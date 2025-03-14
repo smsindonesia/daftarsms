@@ -6,7 +6,7 @@
     <title>SMS - Formulir Pendaftaran</title>
     <style>
         :root {
-            --primary-color: #4CAF50;
+            --primary-color: #05aedf;
             --secondary-color: #2196F3;
             --accent-color: #FF9800;
             --text-color: #333;
@@ -112,7 +112,7 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #0499c4;
             transform: translateY(-2px);
         }
 
@@ -265,23 +265,24 @@
     document.getElementById('registrationForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // Get form elements
         const form = document.getElementById('registrationForm');
         const loading = document.getElementById('loading');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const errorDetail = document.getElementById('errorDetail');
 
-        // Sembunyikan pesan error jika sebelumnya muncul
+        // Hide error message if previously shown
         errorMessage.style.display = 'none';
 
-        // Tampilkan loading
+        // Show loading
         loading.style.display = 'block';
 
-        // Kumpulkan data formulir
+        // Collect form data
         const formData = new FormData(form);
         const data = {};
 
-        // Pemetaan nama parameter form ke nama kolom spreadsheet
+        // Map form parameter names to spreadsheet column names
         const parameterMapping = {
             'namaMentor': 'Nama Lengkap Mentor',
             'namaMember': 'Nama Lengkap Member',
@@ -299,51 +300,43 @@
         };
 
         formData.forEach((value, key) => {
-            // Gunakan nama kolom spreadsheet jika ada dalam mapping
             const spreadsheetKey = parameterMapping[key] || key;
             data[spreadsheetKey] = value;
         });
 
         console.log("Data yang akan dikirim:", data);
 
-        // URL Google Apps Script Web App - yang sudah diupdate dengan deployment terbaru
+        // Google Apps Script Web App URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwW5mRQS1qYf8Ph8I5X8pqmfzV8ptF9zcSxOIIrxGoe7EICr59QdxmrnmObVDRrGpVz/exec';
 
-        // Gunakan XMLHttpRequest untuk mengirim data
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', scriptURL);
-        xhr.setRequestHeader('Content-Type', 'application/json');
+        // Create a form to submit
+        const tempForm = document.createElement('form');
+        tempForm.method = 'POST';
+        tempForm.action = scriptURL;
+        tempForm.target = '_blank'; // This opens response in a new tab, can be removed
 
-        xhr.onload = function() {
+        // Add data as a hidden field
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'data';
+        hiddenField.value = JSON.stringify(data);
+        tempForm.appendChild(hiddenField);
+
+        // Add form to the document and submit it
+        document.body.appendChild(tempForm);
+
+        // Set a timeout to show success message after 2 seconds
+        setTimeout(function() {
             loading.style.display = 'none';
-            if (xhr.status === 200) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.result === 'success') {
-                        form.style.display = 'none';
-                        successMessage.style.display = 'block';
-                    } else {
-                        errorMessage.style.display = 'block';
-                        errorDetail.textContent = response.message || 'Unknown error';
-                    }
-                } catch (e) {
-                    // Jika tidak bisa parse response, anggap sukses
-                    form.style.display = 'none';
-                    successMessage.style.display = 'block';
-                }
-            } else {
-                errorMessage.style.display = 'block';
-                errorDetail.textContent = 'Server returned status: ' + xhr.status;
-            }
-        };
+            form.style.display = 'none';
+            successMessage.style.display = 'block';
 
-        xhr.onerror = function() {
-            loading.style.display = 'none';
-            errorMessage.style.display = 'block';
-            errorDetail.textContent = 'Network error occurred';
-        };
+            // Remove the form from the document
+            document.body.removeChild(tempForm);
+        }, 2000);
 
-        xhr.send(JSON.stringify(data));
+        // Submit the form
+        tempForm.submit();
     });
 </script>
 </body>
