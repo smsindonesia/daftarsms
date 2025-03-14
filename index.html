@@ -256,6 +256,7 @@
             <div class="error-message" id="errorMessage">
                 <h3>Maaf!</h3>
                 <p>Terjadi kesalahan saat mengirim data. Silakan coba lagi.</p>
+                <p id="errorDetail"></p>
             </div>
         </div>
     </div>
@@ -268,6 +269,7 @@
             const loading = document.getElementById('loading');
             const successMessage = document.getElementById('successMessage');
             const errorMessage = document.getElementById('errorMessage');
+            const errorDetail = document.getElementById('errorDetail');
             
             // Sembunyikan pesan error jika sebelumnya muncul
             errorMessage.style.display = 'none';
@@ -289,7 +291,7 @@
                 'noHP': 'No HP',
                 'asalInstansi': 'Asal Instansi',
                 'semesterKelas': 'Semester/Kelas',
-               'jurusan': 'Jurusan',
+                'jurusan': 'Jurusan',
                 'hobi': 'Hobi',
                 'organisasi': 'Organisasi',
                 'citaCita': 'Cita-Cita',
@@ -302,11 +304,15 @@
                 data[spreadsheetKey] = value;
             });
             
-            // Tambahkan timestamp
-            data['Timestamp'] = new Date().toISOString();
+            console.log("Data yang akan dikirim:", data);
             
-            // Kirim data ke Google Sheets
-            fetch('https://script.google.com/macros/s/AKfycbySzhkJAX7jA3t8WQRjOoErQKR9AIrqVRlrJkaZ1GCwTxLep4-T3NHCpPalcepirWkk/exec', {
+            // URL Google Apps Script Web App (ganti dengan URL deployment actual)
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbySzhkJAX7jA3t8WQRjOoErQKR9AIrqVRlrJkaZ1GCwTxLep4-T3NHCpPalcepirWkk/exec';
+            
+            // Gunakan JSONP untuk mengatasi masalah CORS jika di-host di GitHub
+            // Untuk testing lokal, bisa gunakan fetch dengan mode no-cors
+            
+            fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
                 cache: 'no-cache',
@@ -316,18 +322,17 @@
                 body: JSON.stringify(data)
             })
             .then(response => {
-                // Karena mode no-cors, kita tidak bisa membaca respons
-                // Jadi kita anggap berhasil setelah timeout
-                setTimeout(() => {
-                    loading.style.display = 'none';
-                    form.style.display = 'none';
-                    successMessage.style.display = 'block';
-                }, 2000);
+                // Karena mode no-cors, kita tidak bisa membaca response
+                console.log("Request sent successfully");
+                loading.style.display = 'none';
+                form.style.display = 'none';
+                successMessage.style.display = 'block';
             })
             .catch(error => {
                 console.error('Error:', error);
                 loading.style.display = 'none';
                 errorMessage.style.display = 'block';
+                errorDetail.textContent = error.toString();
             });
         });
     </script>
