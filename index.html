@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS - Formulir Pendaftaran</title>
+    <title>KRWL - Formulir Pendaftaran</title>
     <style>
         :root {
             --primary-color: #05aedf;
@@ -83,7 +83,7 @@
             color: var(--text-color);
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -92,7 +92,7 @@
             transition: all 0.3s ease;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
             outline: none;
@@ -106,14 +106,38 @@
             font-size: 18px;
             border-radius: var(--border-radius);
             cursor: pointer;
-            display: block;
-            margin: 30px auto 0;
             transition: all 0.3s ease;
         }
 
         button:hover {
             background-color: #0499c4;
             transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            display: block;
+            margin: 30px auto 0;
+        }
+
+        .btn-add {
+            background-color: var(--accent-color);
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+
+        .btn-add:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-remove {
+            background-color: #f44336;
+            padding: 8px 16px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .btn-remove:hover {
+            background-color: #d32f2f;
         }
 
         .success-message {
@@ -153,6 +177,48 @@
             60%, 100% { content: "..."; }
         }
 
+        .pendaftar-list {
+            margin-top: 20px;
+        }
+
+        .pendaftar-item {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pendaftar-container {
+            margin-top: 10px;
+        }
+
+        .pendaftar-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .pendaftar-input-group input {
+            flex: 1;
+        }
+
+        .pendaftar-count {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .instruction {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
         @media (max-width: 600px) {
             .form-container {
                 padding: 20px;
@@ -180,80 +246,66 @@
 <div class="container">
     <header>
         <div class="logo">
-            <img src="logo.png" alt="SMS Logo">
+            <img src="logo.png" alt="KRWL Logo">
         </div>
-        <h1>SMS - Formulir Pendaftaran</h1>
+        <h1>KRWL - Formulir Pendaftaran</h1>
         <p>Silakan isi formulir di bawah ini dengan lengkap</p>
     </header>
 
     <div class="form-container">
         <form id="registrationForm">
             <div class="form-group">
-                <label for="namaMentor">Nama Lengkap Mentor</label>
-                <input type="text" id="namaMentor" name="namaMentor" required>
+                <label for="kodeKRWL">Kode ID KRWL</label>
+                <input type="text" id="kodeKRWL" name="kodeKRWL" required>
             </div>
 
             <div class="form-group">
-                <label for="namaMember">Nama Lengkap Member</label>
-                <input type="text" id="namaMember" name="namaMember" required>
+                <label for="kodeSubmit">Kode ID Submit</label>
+                <input type="text" id="kodeSubmit" name="kodeSubmit" required>
             </div>
 
             <div class="form-group">
-                <label for="tanggalLahir">Tanggal Lahir</label>
-                <input type="date" id="tanggalLahir" name="tanggalLahir" required>
+                <label for="kodeLocus">Kode ID Locus</label>
+                <input type="text" id="kodeLocus" name="kodeLocus" required>
             </div>
 
             <div class="form-group">
-                <label for="tempatLahir">Tempat Lahir</label>
-                <input type="text" id="tempatLahir" name="tempatLahir" required>
+                <label for="namaKoordinator">Nama Koordinator</label>
+                <input type="text" id="namaKoordinator" name="namaKoordinator" required>
             </div>
 
             <div class="form-group">
-                <label for="alamat">Alamat</label>
-                <textarea id="alamat" name="alamat" rows="3" required></textarea>
+                <label>Nama Calon Pendaftar</label>
+                <p class="instruction">Masukkan nama satu per satu lalu klik tombol "Tambah"</p>
+
+                <div class="pendaftar-container">
+                    <div class="pendaftar-input-group">
+                        <input type="text" id="pendaftarInput" class="pendaftar-input" placeholder="Masukkan nama pendaftar">
+                        <button type="button" class="btn-add" onclick="addPendaftar()">Tambah</button>
+                    </div>
+                </div>
+
+                <div id="pendaftarCount" class="pendaftar-count">Jumlah pendaftar: 0</div>
+                <div id="pendaftarList" class="pendaftar-list"></div>
+                <input type="hidden" id="namaPendaftar" name="namaPendaftar">
             </div>
 
             <div class="form-group">
-                <label for="noHP">No HP</label>
-                <input type="tel" id="noHP" name="noHP" required>
+                <label for="tahapanUpdate">Tahapan Update</label>
+                <select id="tahapanUpdate" name="tahapanUpdate" required>
+                    <option value="" disabled selected>Pilih tahapan...</option>
+                    <option value="T1">T1</option>
+                    <option value="T2">T2</option>
+                    <option value="T3">T3</option>
+                    <option value="T4">T4</option>
+                    <option value="T5">T5</option>
+                    <option value="Obs">Obs</option>
+                    <option value="Mt">Mt</option>
+                    <option value="Ok">Ok</option>
+                </select>
             </div>
 
-            <div class="form-group">
-                <label for="asalInstansi">Asal Instansi (Sekolah/Universitas)</label>
-                <input type="text" id="asalInstansi" name="asalInstansi" required>
-            </div>
-
-            <div class="form-group">
-                <label for="semesterKelas">Semester/Kelas</label>
-                <input type="text" id="semesterKelas" name="semesterKelas" required>
-            </div>
-
-            <div class="form-group">
-                <label for="jurusan">Jurusan</label>
-                <input type="text" id="jurusan" name="jurusan" required>
-            </div>
-
-            <div class="form-group">
-                <label for="hobi">Hobi</label>
-                <input type="text" id="hobi" name="hobi" required>
-            </div>
-
-            <div class="form-group">
-                <label for="organisasi">Organisasi yang pernah di ikuti</label>
-                <textarea id="organisasi" name="organisasi" rows="3" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="citaCita">Cita-Cita</label>
-                <input type="text" id="citaCita" name="citaCita" required>
-            </div>
-
-            <div class="form-group">
-                <label for="motivasi">Motivasi Bergabung</label>
-                <textarea id="motivasi" name="motivasi" rows="3" required></textarea>
-            </div>
-
-            <button type="submit">Kirim</button>
+            <button type="submit" class="btn-submit">Kirim</button>
         </form>
 
         <div class="loading" id="loading">Mengirim data</div>
@@ -273,8 +325,102 @@
 <iframe name="hidden-iframe" class="hidden-iframe" id="hidden-iframe"></iframe>
 
 <script>
+    // Array untuk menyimpan daftar pendaftar
+    let pendaftarList = [];
+
+    // Fungsi untuk menambahkan pendaftar
+    function addPendaftar() {
+        const pendaftarInput = document.getElementById('pendaftarInput');
+        const pendaftarName = pendaftarInput.value.trim();
+
+        if (pendaftarName) {
+            // Tambahkan ke array
+            pendaftarList.push(pendaftarName);
+
+            // Update hidden input
+            document.getElementById('namaPendaftar').value = pendaftarList.join('\n');
+
+            // Tambahkan ke daftar visual
+            const pendaftarListElement = document.getElementById('pendaftarList');
+            const newItem = document.createElement('div');
+            newItem.className = 'pendaftar-item';
+            newItem.innerHTML = `
+                <span>${pendaftarName}</span>
+                <button type="button" class="btn-remove" onclick="removePendaftar(${pendaftarList.length - 1})">Hapus</button>
+            `;
+            pendaftarListElement.appendChild(newItem);
+
+            // Update jumlah pendaftar
+            updatePendaftarCount();
+
+            // Reset input
+            pendaftarInput.value = '';
+            pendaftarInput.focus();
+        }
+    }
+
+    // Fungsi untuk menghapus pendaftar
+    function removePendaftar(index) {
+        // Hapus dari array
+        pendaftarList.splice(index, 1);
+
+        // Update hidden input
+        document.getElementById('namaPendaftar').value = pendaftarList.join('\n');
+
+        // Perbarui seluruh daftar visual
+        updatePendaftarList();
+
+        // Update jumlah pendaftar
+        updatePendaftarCount();
+    }
+
+    // Fungsi untuk memperbarui tampilan daftar pendaftar
+    function updatePendaftarList() {
+        const pendaftarListElement = document.getElementById('pendaftarList');
+        pendaftarListElement.innerHTML = '';
+
+        pendaftarList.forEach((name, index) => {
+            const newItem = document.createElement('div');
+            newItem.className = 'pendaftar-item';
+            newItem.innerHTML = `
+                <span>${name}</span>
+                <button type="button" class="btn-remove" onclick="removePendaftar(${index})">Hapus</button>
+            `;
+            pendaftarListElement.appendChild(newItem);
+        });
+    }
+
+    // Fungsi untuk memperbarui jumlah pendaftar
+    function updatePendaftarCount() {
+        const countElement = document.getElementById('pendaftarCount');
+        countElement.textContent = `Jumlah pendaftar: ${pendaftarList.length}`;
+
+        // Ubah warna berdasarkan jumlah
+        if (pendaftarList.length === 0) {
+            countElement.style.color = '#f44336'; // Merah jika tidak ada pendaftar
+        } else {
+            countElement.style.color = '#05aedf'; // Warna primary jika ada pendaftar
+        }
+    }
+
+    // Tangani enter key pada input pendaftar
+    document.getElementById('pendaftarInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addPendaftar();
+        }
+    });
+
+    // Form submission handler
     document.getElementById('registrationForm').addEventListener('submit', function(event) {
         event.preventDefault();
+
+        // Periksa apakah ada pendaftar
+        if (pendaftarList.length === 0) {
+            alert('Harap tambahkan minimal satu pendaftar');
+            document.getElementById('pendaftarInput').focus();
+            return;
+        }
 
         // Get form elements
         const form = document.getElementById('registrationForm');
@@ -295,19 +441,12 @@
 
         // Map form parameter names to spreadsheet column names
         const parameterMapping = {
-            'namaMentor': 'Nama Lengkap Mentor',
-            'namaMember': 'Nama Lengkap Member',
-            'tanggalLahir': 'Tanggal Lahir',
-            'tempatLahir': 'Tempat Lahir',
-            'alamat': 'Alamat',
-            'noHP': 'No HP',
-            'asalInstansi': 'Asal Instansi',
-            'semesterKelas': 'Semester/Kelas',
-            'jurusan': 'Jurusan',
-            'hobi': 'Hobi',
-            'organisasi': 'Organisasi',
-            'citaCita': 'Cita-Cita',
-            'motivasi': 'Motivasi Bergabung'
+            'kodeKRWL': 'Kode ID KRWL',
+            'kodeSubmit': 'Kode ID Submit',
+            'kodeLocus': 'Kode ID Locus',
+            'namaKoordinator': 'Nama Koordinator',
+            'namaPendaftar': 'Nama Calon Pendaftar',
+            'tahapanUpdate': 'Tahapan Update'
         };
 
         formData.forEach((value, key) => {
@@ -318,7 +457,7 @@
         console.log("Data yang akan dikirim:", data);
 
         // Google Apps Script Web App URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyr1N6YaRjHqUK1hQHWjiuLcC2jZ037ix5z2Iu5YUvGNYXu0cPsC-QgsYBVLREg0jJR/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz_3CsDlrEp9RKBqErNrqwy24QsvihIJvo8FkCGX5Z3_Eq6BEscrSiTl83scK0oSCJC/exec';
 
         // Create a form to submit
         const tempForm = document.createElement('form');
